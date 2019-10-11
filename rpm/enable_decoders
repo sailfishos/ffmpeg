@@ -106,6 +106,7 @@ zlib # zlib
 # Codecs we have licenses for
 aac_latm
 h264
+hevc
 mpeg4
 #amrnb
 #amrwb

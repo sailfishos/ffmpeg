@@ -1,5 +1,5 @@
 Name:           ffmpeg
-Version:        4.1.1
+Version:        4.1.3
 Release:        1
 Summary:        FFmpeg video encoding and decoding library
 Group:          Productivity/Multimedia/Video/Editors and Convertors
