@@ -7,6 +7,7 @@ Source:         %{name}-%{version}.tar.bz2
 Source1:        enable_decoders
 Source2:        enable_encoders
 License:        LGPLv2+
+BuildRequires:  pkgconfig(aom)
 BuildRequires:  pkgconfig(libopenjp2)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:  pkgconfig(libwebp)
@@ -51,7 +52,7 @@ sed -i 's/sed -E/sed -r/g' ./configure
 ./configure --prefix=/usr --libdir=%{_libdir} --disable-debug --enable-shared --enable-pic \
   --disable-static --disable-doc --enable-muxers --enable-demuxers --enable-protocols \
   --disable-indevs --disable-outdevs --disable-bsfs --enable-network --disable-hwaccels \
-  --enable-libopenjpeg --enable-libpulse --enable-libspeex --enable-libtheora \
+  --enable-libopenjpeg --enable-libpulse --enable-libspeex --enable-libtheora --enable-libaom \
   --enable-libvorbis --enable-libvpx --enable-libwebp --disable-encoders --disable-decoders \
   --enable-encoder="$(perl -pe 's{^(\w*).*}{$1,}gs' <%{SOURCE2})" \
   --enable-decoder="$(perl -pe 's{^(\w*).*}{$1,}gs' <%{SOURCE1})" \
