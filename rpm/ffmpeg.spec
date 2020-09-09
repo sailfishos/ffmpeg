@@ -8,6 +8,8 @@ Source1:        enable_decoders
 Source2:        enable_encoders
 Patch0:         0001-backport-avcodec-x86-mathops-clip-constants-used-wit.patch
 License:        LGPLv2+
+BuildRequires:  pkgconfig(aom)
+BuildRequires:  pkgconfig(dav1d)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(freetype2)
 BuildRequires:  pkgconfig(libopenjp2)
@@ -57,6 +59,7 @@ sed -i 's/sed -E/sed -r/g' ./configure
   --disable-indevs --disable-outdevs --disable-bsfs --enable-network --disable-hwaccels \
   --enable-libfontconfig --enable-libfreetype --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-libspeex \
   --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libwebp --disable-encoders --disable-decoders \
+  --enable-libaom --enable-libdav1d \
   --enable-encoder="$(perl -pe 's{^(\w*).*}{$1,}gs' <%{SOURCE2})" \
   --enable-decoder="$(perl -pe 's{^(\w*).*}{$1,}gs' <%{SOURCE1})" \
 
