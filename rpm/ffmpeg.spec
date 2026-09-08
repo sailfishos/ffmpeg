@@ -1,5 +1,5 @@
 Name:           ffmpeg
-Version:        5.1.10
+Version:        8.1.2
 Release:        1
 Summary:        FFmpeg video encoding and decoding library
 Url:            https://github.com/sailfishos/ffmpeg
@@ -20,7 +20,7 @@ BuildRequires:  pkgconfig(vpx)
 BuildRequires:  pkgconfig(zlib)
 Conflicts:      libav
 %ifarch %{ix86} x86_64
-BuildRequires:  yasm
+BuildRequires:  nasm
 %endif
 
 %description
@@ -54,6 +54,7 @@ sed -i 's/sed -E/sed -r/g' ./configure
 ./configure --prefix=/usr --libdir=%{_libdir} --disable-debug --enable-shared --enable-pic \
   --disable-static --disable-doc --enable-muxers --enable-demuxers --enable-protocols \
   --disable-indevs --disable-outdevs --disable-bsfs --enable-network --disable-hwaccels \
+  --disable-ffplay \
   --enable-libfontconfig --enable-libfreetype --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-libspeex \
   --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libwebp --disable-encoders --disable-decoders \
   --enable-encoder="$(perl -pe 's{^(\w*).*}{$1,}gs' <%{SOURCE2})" \
@@ -103,7 +104,6 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavcodec/adts_parser.h
 %{_includedir}/libavcodec/avcodec.h
 %{_includedir}/libavcodec/avdct.h
-%{_includedir}/libavcodec/avfft.h
 %{_includedir}/libavcodec/bsf.h
 %{_includedir}/libavcodec/codec.h
 %{_includedir}/libavcodec/codec_desc.h
@@ -114,16 +114,17 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavcodec/dirac.h
 %{_includedir}/libavcodec/dv_profile.h
 %{_includedir}/libavcodec/dxva2.h
+%{_includedir}/libavcodec/exif.h
 %{_includedir}/libavcodec/jni.h
 %{_includedir}/libavcodec/mediacodec.h
 %{_includedir}/libavcodec/packet.h
 %{_includedir}/libavcodec/qsv.h
+%{_includedir}/libavcodec/smpte_436m.h
 %{_includedir}/libavcodec/vdpau.h
 %{_includedir}/libavcodec/version.h
 %{_includedir}/libavcodec/version_major.h
 %{_includedir}/libavcodec/videotoolbox.h
 %{_includedir}/libavcodec/vorbis_parser.h
-%{_includedir}/libavcodec/xvmc.h
 %dir %{_includedir}/libavdevice
 %{_includedir}/libavdevice/avdevice.h
 %{_includedir}/libavdevice/version.h
@@ -143,6 +144,7 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavutil/adler32.h
 %{_includedir}/libavutil/aes.h
 %{_includedir}/libavutil/aes_ctr.h
+%{_includedir}/libavutil/ambient_viewing_environment.h
 %{_includedir}/libavutil/attributes.h
 %{_includedir}/libavutil/audio_fifo.h
 %{_includedir}/libavutil/avassert.h
@@ -158,6 +160,7 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavutil/cast5.h
 %{_includedir}/libavutil/channel_layout.h
 %{_includedir}/libavutil/common.h
+%{_includedir}/libavutil/container_fifo.h
 %{_includedir}/libavutil/cpu.h
 %{_includedir}/libavutil/crc.h
 %{_includedir}/libavutil/csp.h
@@ -170,6 +173,7 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavutil/encryption_info.h
 %{_includedir}/libavutil/error.h
 %{_includedir}/libavutil/eval.h
+%{_includedir}/libavutil/executor.h
 %{_includedir}/libavutil/ffversion.h
 %{_includedir}/libavutil/fifo.h
 %{_includedir}/libavutil/file.h
@@ -180,17 +184,21 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavutil/hdr_dynamic_vivid_metadata.h
 %{_includedir}/libavutil/hmac.h
 %{_includedir}/libavutil/hwcontext.h
+%{_includedir}/libavutil/hwcontext_amf.h
 %{_includedir}/libavutil/hwcontext_cuda.h
 %{_includedir}/libavutil/hwcontext_d3d11va.h
+%{_includedir}/libavutil/hwcontext_d3d12va.h
 %{_includedir}/libavutil/hwcontext_drm.h
 %{_includedir}/libavutil/hwcontext_dxva2.h
 %{_includedir}/libavutil/hwcontext_mediacodec.h
+%{_includedir}/libavutil/hwcontext_oh.h
 %{_includedir}/libavutil/hwcontext_opencl.h
 %{_includedir}/libavutil/hwcontext_qsv.h
 %{_includedir}/libavutil/hwcontext_vaapi.h
 %{_includedir}/libavutil/hwcontext_vdpau.h
 %{_includedir}/libavutil/hwcontext_videotoolbox.h
 %{_includedir}/libavutil/hwcontext_vulkan.h
+%{_includedir}/libavutil/iamf.h
 %{_includedir}/libavutil/imgutils.h
 %{_includedir}/libavutil/intfloat.h
 %{_includedir}/libavutil/intreadwrite.h
@@ -212,6 +220,7 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavutil/random_seed.h
 %{_includedir}/libavutil/rational.h
 %{_includedir}/libavutil/rc4.h
+%{_includedir}/libavutil/refstruct.h
 %{_includedir}/libavutil/replaygain.h
 %{_includedir}/libavutil/ripemd.h
 %{_includedir}/libavutil/samplefmt.h
@@ -224,12 +233,14 @@ rm -rf $RPM_BUILD_ROOT/%{_datadir}/%{name}/examples
 %{_includedir}/libavutil/time.h
 %{_includedir}/libavutil/timecode.h
 %{_includedir}/libavutil/timestamp.h
+%{_includedir}/libavutil/tdrdi.h
 %{_includedir}/libavutil/tree.h
 %{_includedir}/libavutil/twofish.h
 %{_includedir}/libavutil/tx.h
 %{_includedir}/libavutil/uuid.h
 %{_includedir}/libavutil/version.h
 %{_includedir}/libavutil/video_enc_params.h
+%{_includedir}/libavutil/video_hint.h
 %{_includedir}/libavutil/xtea.h
 %dir %{_includedir}/libswresample
 %{_includedir}/libswresample/swresample.h
